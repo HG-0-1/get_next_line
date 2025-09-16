@@ -1,5 +1,112 @@
-hai
-UEAgf
-SGJU
-UOG9u
--ig9gswg
+#include "get_next_line.h"
+
+static char	*extract_line(char *line)
+{
+	int		i;
+	char	*res;
+
+	if (!line || !*line)
+		return (NULL);
+	i = 0;
+	while (line[i] && line[i] != '\n')
+		i++;
+	if (line[i] == '\n')
+		i++;
+	res = malloc(i + 1);
+	if (!res)
+		return (NULL);
+	ft_memcpy(res, line, i);
+	res[i] = '\0';
+	return (res);
+}
+
+static char	*save_remainder(char *line)
+{
+	int		i;
+	int		j;
+	char	*res;
+
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (line[i] && line[i] != '\n')
+		i++;
+	if (!line[i]) // ما في \n → ما في remainder
+	{
+		free(line);
+		return (NULL);
+	}
+	i++; // نتخطى '\n'
+	res = malloc(ft_strlen(line + i) + 1);
+	if (!res)
+	{
+		free(line);
+		return (NULL);
+	}
+	j = 0;
+	while (line[i + j])
+	{
+		res[j] = line[i + j];
+		j++;
+	}
+	res[j] = '\0';
+	free(line);
+	return (res);
+}
+
+static char	*read_line(int fd, char *line)
+{
+	char	*buffer;
+	char	*tmp;
+	int		read_fa;
+
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	read_fa = 1;
+	while (!ft_strchr(line, '\n') && read_fa > 0)
+	{
+		read_fa = read(fd, buffer, BUFFER_SIZE);
+		if (read_fa < 0)
+		{
+			free(buffer);
+			free(line);
+			return (NULL);
+		}
+		buffer[read_fa] = '\0';
+		tmp = ft_strjoin(line, buffer);
+		if (!tmp)
+		{
+			free(buffer);
+			free(line);
+			return (NULL);
+		}
+		free(line);
+		line = tmp;
+	}
+	free(buffer);
+	return (line);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*stash[MAX_FD];
+	char		*res;
+
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > MAX_FD)
+		return (NULL);
+	if (!stash[fd])
+		stash[fd] = ft_strdup("");
+	stash[fd] = read_line(fd, stash[fd]);
+	if (!stash[fd])
+		return (NULL);
+	if (stash[fd][0] == '\0')
+	{
+		free(stash[fd]);
+		stash[fd] = NULL;
+		return (NULL);
+	}
+	res = extract_line(stash[fd]);
+	stash[fd] = save_remainder(stash[fd]);
+	return (res);
+}
