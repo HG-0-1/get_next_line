@@ -6,7 +6,7 @@
 /*   By: helfayez <helfayez@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 14:23:23 by helfayez          #+#    #+#             */
-/*   Updated: 2025/09/15 14:55:46 by helfayez         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:10:11 by helfayez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,5 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s);
 char	*get_next_line(int fd);
-int		ft_free(void *ptr);
+int		ft_free(void *ptr2);
 #endif
