@@ -6,7 +6,7 @@
 /*   By: helfayez <helfayez@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 14:24:37 by helfayez          #+#    #+#             */
-/*   Updated: 2025/09/15 14:58:03 by helfayez         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:16:57 by helfayez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	i;
 	size_t	j;
 
-	if (!s1 || !s2)
-		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
 	lenss = ft_strlen(s1) + ft_strlen(s2);
 	i = 0;
 	j = 0;
@@ -89,8 +89,8 @@ char	*ft_strdup(const char *s)
 	return (mallo);
 }
 
-int	ft_free(void *ptr)
+int	ft_free(void *ptr2)
 {
-	free(ptr);
+	free(ptr2);
 	return (1);
 }
