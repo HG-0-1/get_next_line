@@ -6,7 +6,7 @@
 /*   By: helfayez <helfayez@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 14:23:34 by helfayez          #+#    #+#             */
-/*   Updated: 2025/09/15 15:25:42 by helfayez         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:07:26 by helfayez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ char	*return_line(char *line)
 		i++;
 	mallo = malloc(i + 1);
 	if (!mallo)
+	{
+		free(mallo);
 		return (NULL);
+	}
 	while (j < i)
 	{
 		mallo[j] = line[j];
@@ -80,30 +83,31 @@ char	*save_my_line(char *line)
 	return (col_line);
 }
 
-char	*read_line(int fd, char *line)
+char	*read_line(int fd, char *line, char *buffer)
 {
 	int		read_fa;
 	char	*new_line;
-	char	*buffer;
 
-	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
-		if (ft_free(line))
-			return (NULL);
+	{
+		free(line);
+		return (NULL);
+	}
 	read_fa = 1;
 	while (!ft_strchr(line, '\n') && read_fa > 0)
 	{
 		read_fa = read(fd, buffer, BUFFER_SIZE);
 		if (read_fa < 0)
-			if (ft_free(buffer))
-				if (ft_free(line))
-					return (NULL);
+			if (ft_free(line))
+				return (NULL);
 		buffer[read_fa] = '\0';
 		new_line = ft_strjoin(line, buffer);
+		if (!new_line)
+			if (ft_free(line))
+				return (NULL);
 		free(line);
 		line = new_line;
 	}
-	free(buffer);
 	return (line);
 }
 
@@ -111,12 +115,13 @@ char	*get_next_line(int fd)
 {
 	static char	*line[MAXFD];
 	char		*res;
+	char		*buffer;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!line[fd])
-		line[fd] = ft_strdup("");
-	line[fd] = read_line(fd, line[fd]);
+	buffer = malloc(BUFFER_SIZE + 1);
+	line[fd] = read_line(fd, line[fd], buffer);
+	free(buffer);
 	if (!line[fd])
 		return (NULL);
 	if (line[fd][0] == '\0')
@@ -127,5 +132,42 @@ char	*get_next_line(int fd)
 	}
 	res = return_line(line[fd]);
 	line[fd] = save_my_line(line[fd]);
+	if (!res)
+		if (ft_free(line[fd]))
+			if (ft_free(res))
+				return (NULL);
 	return (res);
 }
+// #include <fcntl.h>      
+// #include <unistd.h>     
+// #include <stdio.h>     
+// #include <stdlib.h>     
+
+// #include "get_next_line.h"  
+
+// int main(void)
+// {
+//     int     fd;
+// 	int     fd2;
+//     char    *line;
+// 	char    *line2;
+
+//    
+//      fd = open("h.txt", O_RDONLY);
+// 	 fd2 = open("hh.txt", O_RDONLY);
+
+//     while ((line = get_next_line(fd)) != NULL)
+//     {
+//         printf("f1; %s", line);
+//         free(line);
+//     }
+// 	while ((line2 = get_next_line(fd2)) != NULL)
+// 	{
+// 		printf("f2; %s", line2);
+// 		free(line2);
+// 	}
+
+//     close(fd);
+// 	close(fd2);
+// 	return (0);
+// }
