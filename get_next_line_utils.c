@@ -6,11 +6,11 @@
 /*   By: helfayez <helfayez@student.42amman.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 15:32:42 by helfayez          #+#    #+#             */
-/*   Updated: 2025/09/15 14:50:22 by helfayez         ###   ########.fr       */
+/*   Updated: 2025/09/16 16:49:03 by helfayez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
 char	*ft_strchr(const char *s, int c)
 {
@@ -37,13 +37,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	i;
 	size_t	j;
 
-	if (!s1 || !s2)
-		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
 	lenss = ft_strlen(s1) + ft_strlen(s2);
 	i = 0;
 	j = 0;
 	mallo = malloc(lenss * sizeof(char) + 1);
-	if (!mallo)
+	if (!mallo || !s1 || !s2)
 		return (NULL);
 	while (s1[i] != 0)
 	{
@@ -89,8 +89,8 @@ char	*ft_strdup(const char *s)
 	return (mallo);
 }
 
-int	ft_free(void *ptr)
+int	ft_free(void *ptr2)
 {
-	free(ptr);
+	free(ptr2);
 	return (1);
 }
